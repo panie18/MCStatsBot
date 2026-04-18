@@ -2,7 +2,9 @@
 
 MCStatsBot is a Minecraft server plugin that tracks what your players are up to and sends a daily summary to your Discord server. Playtime, mining, combat, exploration, fun facts — all of it, formatted into a clean embed that lands in your channel every morning (or whenever you schedule it).
 
-It works across two pieces: a lightweight plugin on your Minecraft server that collects data, and a small Node.js server that handles the Discord side. The two talk to each other over a simple API, so your MC server doesn't need to touch Discord at all.
+The central server that handles Discord integration is already hosted at [mcstatsbot.tech](https://mcstatsbot.tech) — you just install the plugin and follow a two-minute setup. No server, no Node.js, no config files to dig through.
+
+Also available on [SpigotMC](https://www.spigotmc.org/resources/mcstatsbot.123456/).
 
 ---
 
@@ -26,67 +28,32 @@ Minecraft Server (plugin)
         |
         | HTTP POST — daily stats payload
         v
-Central Node.js Server (mcstatsbot-server)
+mcstatsbot.tech (already hosted)
         |
         | Discord.js
         v
 Discord Channel
 ```
 
-The plugin registers itself with your central server on first startup and gets a unique server ID and secret. After that, it sends stats automatically. Setup takes about two minutes via a web onboarding page the plugin prints to console.
-
----
-
-## Requirements
-
-**Plugin**
-- Paper or Spigot 1.21.x (also works on Paper 26.1+)
-- Java 21
-
-**Central server**
-- Node.js 18+
-- A Discord bot token and a channel to post in
-- Any server or VPS (a Raspberry Pi works fine)
+The plugin registers itself on first startup and prints a setup URL to console. You open it, connect your Discord server, pick a channel, and that's it. No self-hosting required.
 
 ---
 
 ## Installation
 
-### 1. Set up the central server
+1. Download `MCStatsBot-1.0.0.jar` from the [releases page](https://github.com/panie18/MCStatsBot/releases) or from [SpigotMC](https://www.spigotmc.org/resources/mcstatsbot.123456/)
+2. Drop it into your server's `plugins/` folder
+3. Restart your server
+4. Open the setup URL that appears in console
+5. Connect your Discord server and pick a channel — done
 
-Clone the repo and go into the `server` folder:
-
-```bash
-cd server
-npm install
-cp .env.example .env
-```
-
-Edit `.env` and fill in your Discord bot token, the Discord channel ID where reports should go, and a random string for `JWT_SECRET`.
-
-Start the server:
-
-```bash
-npm start
-```
-
-It listens on port 3000 by default. Put it behind a reverse proxy (nginx, Caddy) with a domain if you want HTTPS, which the plugin requires.
-
-### 2. Install the plugin
-
-Drop `MCStatsBot-1.0.0.jar` into your server's `plugins/` folder and restart. The plugin will print a setup URL to console:
-
-```
-[MCStatsBot] Setup required: https://your-server.example.com/setup?token=...
-```
-
-Open that URL in a browser, connect your Discord server, pick a channel, and you're done. The plugin config (`plugins/MCStatsBot/config.yml`) gets filled in automatically.
+**Requirements:** Paper or Spigot 1.21.x (also works on Paper 26.1+), Java 21
 
 ---
 
 ## Configuration
 
-`plugins/MCStatsBot/config.yml` — most things you won't need to touch after onboarding:
+`plugins/MCStatsBot/config.yml` — the important bits:
 
 ```yaml
 general:
@@ -102,7 +69,7 @@ tracking:
   items: true
 ```
 
-Report schedule and which sections appear are controlled from the central server's dashboard.
+Report schedule and section settings are managed through the web dashboard after setup.
 
 ---
 
@@ -126,22 +93,32 @@ Each daily report can include any combination of these sections:
 
 ## Languages
 
-English and German are both supported. Set `language: en` or `language: de` in the plugin config. The Discord reports will follow that setting.
+English and German are both supported. Set `language: en` or `language: de` in the plugin config.
+
+---
+
+## Self-hosting
+
+If you want to run your own instance of the central server instead of using mcstatsbot.tech, the full server code is in the `server/` folder.
+
+```bash
+cd server
+npm install
+cp .env.example .env
+# fill in your Discord bot token and other values
+npm start
+```
+
+Then point the plugin at your own URL by changing `central.url` in `config.yml`.
 
 ---
 
 ## Building from source
 
 ```bash
-# Plugin
 cd plugin
 ./gradlew shadowJar
 # Output: build/libs/MCStatsBot-1.0.0.jar
-
-# Server
-cd server
-npm install
-npm start
 ```
 
 ---
