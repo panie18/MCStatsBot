@@ -359,10 +359,16 @@
     <div class="section">
       <div class="section-title">Commands</div>
       <div class="card">
-        <div class="command-row">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--c-content-muted);margin-bottom:10px;">Minecraft</div>
+        <div class="command-row" style="padding-top:0">
           <span class="cmd">/mcstats reload</span>
           <span class="cmd-desc">Reloads the plugin configuration from disk.</span>
           <span class="cmd-perm">mcstatsbot.admin</span>
+        </div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--c-content-muted);margin:16px 0 10px;">Discord</div>
+        <div class="command-row" style="padding-top:0;border-top:none">
+          <span class="cmd">/stats</span>
+          <span class="cmd-desc">Triggers a report immediately, without waiting for the scheduled time.</span>
         </div>
       </div>
     </div>
@@ -428,7 +434,7 @@
         </details>
         <details>
           <summary>Can I trigger a report manually?</summary>
-          <div class="faq-body">Not directly from in-game yet. If you need a manual report for testing, the plugin will send one at the scheduled time automatically. A manual trigger command is planned for a future update.</div>
+          <div class="faq-body">Yes — use the <code>/stats</code> slash command in your Discord server. The bot will generate and post a report immediately, regardless of the scheduled time.</div>
         </details>
         <details>
           <summary>How do I remove MCStatsBot?</summary>
