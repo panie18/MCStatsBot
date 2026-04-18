@@ -51,28 +51,6 @@ The plugin registers itself on first startup and prints a setup URL to console. 
 
 ---
 
-## Configuration
-
-`plugins/MCStatsBot/config.yml` — the important bits:
-
-```yaml
-general:
-  language: en          # en or de
-  data-retention-days: 90
-  afk-timeout-minutes: 5
-
-tracking:
-  chat-messages: true
-  blocks: true
-  mob-kills: true
-  movement: true
-  items: true
-```
-
-Report schedule and section settings are managed through the web dashboard after setup.
-
----
-
 ## Report sections
 
 Each daily report can include any combination of these sections:
@@ -93,23 +71,7 @@ Each daily report can include any combination of these sections:
 
 ## Languages
 
-English and German are both supported. Set `language: en` or `language: de` in the plugin config.
-
----
-
-## Self-hosting
-
-If you want to run your own instance of the central server instead of using mcstatsbot.tech, the full server code is in the `server/` folder.
-
-```bash
-cd server
-npm install
-cp .env.example .env
-# fill in your Discord bot token and other values
-npm start
-```
-
-Then point the plugin at your own URL by changing `central.url` in `config.yml`.
+English and German are both supported. Switch between them in the web dashboard after setup.
 
 ---
 
@@ -120,6 +82,12 @@ cd plugin
 ./gradlew shadowJar
 # Output: build/libs/MCStatsBot-1.0.0.jar
 ```
+
+---
+
+## Self-hosting
+
+Want to run your own instance instead of using mcstatsbot.tech? See [SELF_HOSTING.md](SELF_HOSTING.md) for the full setup guide.
 
 ---
 
