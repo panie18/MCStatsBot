@@ -137,6 +137,15 @@ app.use((req, res, next) => {
   next();
 });
 
+// ── Subdomain routing (must be before static files) ──────────────────────────
+app.use((req, res, next) => {
+  if (req.hostname === 'help.mcstatsbot.tech') {
+    res.setHeader('Cache-Control', 'no-store');
+    return res.sendFile(path.join(__dirname, '..', 'public', 'help', 'index.html'));
+  }
+  next();
+});
+
 // ── Static Files ──────────────────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, '..', 'public'), {
   maxAge: '1d',
@@ -182,15 +191,6 @@ app.get('/.well-known/security.txt', (req, res) => {
     'Preferred-Languages: de, en',
     'Policy: https://auth.mcstatsbot.tech/privacy',
   ].join('\n'));
-});
-
-// help.mcstatsbot.tech — serve help page
-app.get('*', (req, res, next) => {
-  if (req.hostname === 'help.mcstatsbot.tech') {
-    res.setHeader('Cache-Control', 'no-store');
-    return res.sendFile(path.join(__dirname, '..', 'public', 'help', 'index.html'));
-  }
-  next();
 });
 
 // SPA catch-all
