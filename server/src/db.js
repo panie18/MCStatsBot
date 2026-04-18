@@ -53,7 +53,17 @@ try {
 function cleanupOAuthStates() {
   db.prepare("DELETE FROM oauth_states WHERE created_at < datetime('now', '-10 minutes')").run();
 }
-setInterval(cleanupOAuthStates, 5 * 60 * 1000); // run every 5 minutes
+setInterval(cleanupOAuthStates, 5 * 60 * 1000);
+
+// Delete stats older than retention period (default 90 days) — DSGVO compliance
+function cleanupOldStats() {
+  const servers = db.prepare('SELECT id FROM servers').all();
+  for (const server of servers) {
+    db.prepare("DELETE FROM stats WHERE server_id = ? AND received_at < datetime('now', '-90 days')").run(server.id);
+  }
+}
+cleanupOldStats(); // run once on startup
+setInterval(cleanupOldStats, 24 * 60 * 60 * 1000); // then daily
 
 module.exports = {
   // Server management

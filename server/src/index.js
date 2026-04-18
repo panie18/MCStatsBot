@@ -130,7 +130,7 @@ app.use((req, res, next) => {
         path: req.path,
         status: res.statusCode,
         ms: Date.now() - start,
-        ip: req.ip
+        ip: (req.ip || '').replace(/(\d+\.\d+\.\d+\.)\d+/, '$1***').replace(/([\da-f:]+:[\da-f:]+):[:\da-f]+$/i, '$1:***')
       });
     }
   });
