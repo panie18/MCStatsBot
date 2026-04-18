@@ -148,10 +148,15 @@ function LandingPage() {
             style={{ background: 'var(--c-action)' }}>
             <Download className="w-4 h-4" /> {tl.download}
           </a>
-          <a href="https://github.com/paultinedev/mcstatsbot" target="_blank" rel="noopener noreferrer"
+          <a href="https://github.com/panie18/MCStatsBot" target="_blank" rel="noopener noreferrer"
             className="h-11 px-5 rounded-full font-semibold text-[14px] flex items-center gap-2 transition-all cursor-pointer active:scale-[0.97] glass-btn hover:scale-105"
             style={{ color: 'var(--c-content)' }}>
             <GithubIcon /> GitHub
+          </a>
+          <a href="https://www.spigotmc.org/resources/mcstatsbot.134361/" target="_blank" rel="noopener noreferrer"
+            className="h-11 px-5 rounded-full font-semibold text-[14px] flex items-center gap-2 transition-all cursor-pointer active:scale-[0.97] glass-btn hover:scale-105"
+            style={{ color: 'var(--c-content)' }}>
+            <SpigotIcon /> SpigotMC
           </a>
         </motion.div>
       </div>
@@ -827,7 +832,7 @@ function LegalPage({ title, icon, children }) {
           </div>
           <div className="prose-sm space-y-4" style={{ color: 'var(--c-content-muted)' }}>{children}</div>
         </div>
-        <p className="text-[11px] text-center mt-4" style={{ color: 'color-mix(in srgb, var(--c-content-muted) 50%, transparent)' }}>MCStatsBot &middot; Stand: März 2026</p>
+        <p className="text-[11px] text-center mt-4" style={{ color: 'color-mix(in srgb, var(--c-content-muted) 50%, transparent)' }}>MCStatsBot &middot; April 2026</p>
       </div>
     </div>
   )
@@ -835,37 +840,94 @@ function LegalPage({ title, icon, children }) {
 
 function PrivacyPage() {
   return (
-    <LegalPage title="Datenschutzerklärung" icon={<Lock className="w-5 h-5" />}>
-      <Section title="1. Verantwortlicher">
-        <p>Verantwortlich für die Datenverarbeitung im Rahmen von MCStatsBot ist der Betreiber des Dienstes. Bei Fragen zum Datenschutz wende dich an den Serveradministrator.</p>
+    <LegalPage title="Privacy Policy" icon={<Lock className="w-5 h-5" />}>
+      <Section title="1. Who we are">
+        <p>MCStatsBot is a service that collects aggregated gameplay statistics from Minecraft servers and delivers daily summary reports to Discord channels. The service is operated privately and hosted on servers located in Austria, European Union.</p>
+        <p className="mt-2">If you have any questions about this privacy policy or how your data is handled, please open an issue on <a href="https://github.com/panie18/MCStatsBot" target="_blank" rel="noopener noreferrer" className="underline font-medium" style={{ color: 'var(--c-action)' }}>GitHub</a>.</p>
       </Section>
-      <Section title="2. Welche Daten wir erheben">
-        <p>Wir erheben und verarbeiten folgende Daten:</p>
+      <Section title="2. What data we collect">
+        <p className="mb-2">We collect only what is necessary to provide the service. Here is a full breakdown:</p>
+        <p className="font-medium mb-1" style={{ color: 'var(--c-content)' }}>Discord data (via OAuth2)</p>
+        <ul className="list-disc pl-5 space-y-1 mb-3">
+          <li>Your Discord user ID and username — used to authenticate you during setup</li>
+          <li>The list of Discord servers you are in — used to let you pick which server to connect</li>
+          <li>We do not read, store, or access any of your Discord messages, DMs, or other personal content</li>
+        </ul>
+        <p className="font-medium mb-1" style={{ color: 'var(--c-content)' }}>Minecraft statistics</p>
+        <ul className="list-disc pl-5 space-y-1 mb-3">
+          <li>Player usernames and UUIDs — to attribute stats to individual players in reports</li>
+          <li>Playtime, blocks broken, blocks placed, blocks crafted</li>
+          <li>Combat data: kills, deaths, kill streaks, mob kills broken down by type</li>
+          <li>Movement data: total distance walked, chunks explored, portal usage</li>
+          <li>The number of chat messages sent per player — not the content of any message</li>
+          <li>Items used, potions thrown, food consumed — as aggregate counts only</li>
+          <li>Achievements unlocked and XP earned</li>
+        </ul>
+        <p className="font-medium mb-1" style={{ color: 'var(--c-content)' }}>Server configuration</p>
+        <ul className="list-disc pl-5 space-y-1 mb-3">
+          <li>Discord server ID and channel ID you chose during setup</li>
+          <li>Your preferred report time, language, and which sections to include</li>
+          <li>A unique server ID and API secret generated on first plugin startup</li>
+        </ul>
+        <p className="font-medium mb-1" style={{ color: 'var(--c-content)' }}>Technical data</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li><strong>Discord-Profildaten:</strong> Benutzername, Benutzer-ID und Serverliste (via OAuth2). Wir haben keinen Zugriff auf deine Nachrichten.</li>
-          <li><strong>Minecraft-Statistiken:</strong> Spielzeit, abgebaute Blöcke, Mob-Kills, Bewegungsdaten und Chat-Nachrichten-Anzahl (keine Inhalte).</li>
-          <li><strong>Serverkonfiguration:</strong> Discord-Server-ID, Channel-ID und Report-Zeitpunkt.</li>
-          <li><strong>Technische Daten:</strong> IP-Adresse (für Rate Limiting, wird nicht gespeichert), Session-Cookies.</li>
+          <li>IP addresses are used for rate limiting only and are not stored to disk</li>
+          <li>A session cookie is set during the OAuth2 flow — see section 7 for details</li>
         </ul>
       </Section>
-      <Section title="3. Zweck der Verarbeitung">
+      <Section title="3. How we use your data">
         <ul className="list-disc pl-5 space-y-1">
-          <li>Bereitstellung des Dienstes (Statistik-Reports an Discord senden)</li>
-          <li>Authentifizierung über Discord OAuth2</li>
-          <li>Schutz vor Missbrauch (Rate Limiting)</li>
+          <li>To generate and send daily stat reports to your configured Discord channel</li>
+          <li>To authenticate you via Discord OAuth2 during the setup process</li>
+          <li>To protect the service against abuse via rate limiting</li>
+          <li>We do not use your data for advertising, profiling, or any purpose beyond operating the service</li>
         </ul>
       </Section>
-      <Section title="4. Datenweitergabe">
-        <p>Daten werden ausschließlich an Discord (discord.com) übermittelt, um die Bot-Funktionalität bereitzustellen. Eine darüber hinausgehende Weitergabe an Dritte findet nicht statt.</p>
+      <Section title="4. Data sharing">
+        <p>We do not sell, rent, or share your data with any third party except the following:</p>
+        <ul className="list-disc pl-5 space-y-1 mt-2">
+          <li><strong>Discord (discord.com)</strong> — reports are sent to Discord's API to post messages in your channel. This is the core function of the service. Discord's own privacy policy applies to that data.</li>
+        </ul>
+        <p className="mt-2">No analytics services, advertising networks, or other third-party trackers are used.</p>
       </Section>
-      <Section title="5. Speicherdauer">
-        <p>Minecraft-Statistiken werden entsprechend der Plugin-Konfiguration gespeichert (Standard: 90 Tage). Session-Cookies laufen nach 1 Stunde ab. Serverkonfigurationen werden gespeichert, bis der Dienst deinstalliert wird.</p>
+      <Section title="5. Where your data is stored">
+        <p>All data is processed and stored on privately operated servers located in Austria, within the European Union. No data is transferred outside the EU except to Discord's infrastructure (which is covered under Discord's own GDPR compliance).</p>
       </Section>
-      <Section title="6. Deine Rechte">
-        <p>Du hast das Recht auf Auskunft, Berichtigung und Löschung deiner Daten. Die Deinstallation des Plugins entfernt alle lokal gespeicherten Daten. Zur Löschung der zentral gespeicherten Daten wende dich an den Betreiber.</p>
+      <Section title="6. How long we keep your data">
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Minecraft statistics are stored for 90 days by default. Server administrators can adjust this in the plugin config.</li>
+          <li>Server configuration (Discord channel, report time, etc.) is kept until you remove the plugin or request deletion.</li>
+          <li>Session cookies expire after 1 hour.</li>
+          <li>IP addresses used for rate limiting are never written to permanent storage.</li>
+        </ul>
       </Section>
       <Section title="7. Cookies">
-        <p>Wir verwenden ein signiertes Session-Cookie zur Authentifizierung. Dieses Cookie ist httpOnly, secure und wird nach 1 Stunde gelöscht. Tracking-Cookies werden nicht eingesetzt.</p>
+        <p>We use a single session cookie during the Discord OAuth2 setup flow. This cookie:</p>
+        <ul className="list-disc pl-5 space-y-1 mt-2">
+          <li>Is <strong>httpOnly</strong> — not accessible to JavaScript</li>
+          <li>Is <strong>secure</strong> — only sent over HTTPS</li>
+          <li>Expires after <strong>1 hour</strong></li>
+          <li>Is used only to maintain your login state during setup, then discarded</li>
+        </ul>
+        <p className="mt-2">No tracking cookies, advertising cookies, or persistent cookies are used.</p>
+      </Section>
+      <Section title="8. Your rights (GDPR)">
+        <p>If you are located in the European Union, you have the following rights under the GDPR:</p>
+        <ul className="list-disc pl-5 space-y-1 mt-2">
+          <li><strong>Right of access</strong> — you can request a copy of the data we hold about you</li>
+          <li><strong>Right to rectification</strong> — you can ask us to correct inaccurate data</li>
+          <li><strong>Right to erasure</strong> — you can request deletion of your data at any time</li>
+          <li><strong>Right to restriction</strong> — you can ask us to limit how we use your data</li>
+          <li><strong>Right to object</strong> — you can object to the processing of your data</li>
+        </ul>
+        <p className="mt-2">To exercise any of these rights, open an issue on <a href="https://github.com/panie18/MCStatsBot" target="_blank" rel="noopener noreferrer" className="underline font-medium" style={{ color: 'var(--c-action)' }}>GitHub</a>.</p>
+        <p className="mt-2">Uninstalling the plugin immediately stops all data collection. Data already stored on the central server will be deleted automatically after the configured retention period, or immediately upon request.</p>
+      </Section>
+      <Section title="9. Open source">
+        <p>The full source code for both the plugin and the central server is publicly available on <a href="https://github.com/panie18/MCStatsBot" target="_blank" rel="noopener noreferrer" className="underline font-medium" style={{ color: 'var(--c-action)' }}>GitHub</a>. You can inspect exactly what data is collected and how it is processed. If you prefer complete control over your data, a self-hosting option is available — see the repository for instructions.</p>
+      </Section>
+      <Section title="10. Changes to this policy">
+        <p>If we make significant changes to this privacy policy, we will update this page. The date at the bottom of this page reflects when it was last updated.</p>
       </Section>
     </LegalPage>
   )
@@ -1133,6 +1195,14 @@ function DiscordIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
       <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+    </svg>
+  )
+}
+
+function SpigotIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 2c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8zm-1 3v2H7v2h4v2H7v2h4v2h2v-2h4v-2h-4v-2h4V9h-4V7h-2z"/>
     </svg>
   )
 }
