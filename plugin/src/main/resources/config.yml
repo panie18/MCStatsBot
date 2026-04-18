@@ -1,0 +1,50 @@
+# MCStatsBot Konfiguration
+# ========================
+
+# Zentraler Server (fuer Discord-Integration)
+# Beim ersten Start wird der Server automatisch registriert.
+# Oeffne den Setup-Link aus der Konsole um Discord zu verknuepfen.
+central:
+  url: "https://auth.mcstatsbot.tech"
+  server-id: ""
+  api-secret: ""
+
+# Allgemeine Einstellungen
+general:
+  # Sprache (aktuell nur 'de')
+  language: de
+  # Nach wie vielen Tagen alte Daten geloescht werden
+  data-retention-days: 90
+  # Nach wie vielen Minuten ohne Bewegung gilt ein Spieler als AFK
+  afk-timeout-minutes: 5
+
+# Tracking Einstellungen
+tracking:
+  # Chat-Nachrichten zaehlen
+  chat-messages: true
+  # Befehle zaehlen
+  commands: true
+  # Block-Events tracken
+  blocks: true
+  # Mob-Kills tracken
+  mob-kills: true
+  # Bewegung tracken
+  movement: true
+  # Items tracken
+  items: true
+
+# Datenbank Einstellungen
+database:
+  # Maximale Verbindungen im Pool
+  max-pool-size: 5
+  # Batch-Insert Groesse
+  batch-size: 50
+  # Interval fuer Batch-Flush in Sekunden
+  flush-interval-seconds: 30
+
+# Web Dashboard
+web:
+  # Dashboard aktivieren/deaktivieren
+  enabled: true
+  # Port fuer das Web-Dashboard
+  port: 8080

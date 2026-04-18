@@ -1,0 +1,15 @@
+name: MCStatsBot
+version: '${version}'
+main: de.mcstatsbot.MCStatsBot
+api-version: '1.21'
+description: Comprehensive stats plugin with integrated Discord bot
+author: MCStatsBot
+commands:
+  mcstats:
+    description: MCStatsBot commands
+    usage: /mcstats reload
+    permission: mcstatsbot.admin
+permissions:
+  mcstatsbot.admin:
+    description: Admin permission for MCStatsBot
+    default: op

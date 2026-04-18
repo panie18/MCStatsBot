@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCStatsBot Setup</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f1117;--card:#1a1d27;--card-border:#2a2d3a;--primary:#5865f2;--primary-hover:#4752c4;--green:#43b581;--green-hover:#3ca374;--text:#dcddde;--text-muted:#72767d;--text-bright:#fff;--danger:#ed4245;--warning:#fee75c;--input-bg:#0e0f14;--input-border:#2a2d3a;--step-inactive:#2a2d3a}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.container{max-width:600px;width:100%}
+.logo{text-align:center;margin-bottom:32px}
+.logo h1{font-size:28px;color:var(--text-bright);margin-bottom:4px}
+.logo p{color:var(--text-muted);font-size:14px}
+.logo .icon{font-size:48px;margin-bottom:12px;display:block}
+
+/* Progress */
+.progress{display:flex;gap:8px;margin-bottom:32px}
+.progress-step{flex:1;height:4px;border-radius:2px;background:var(--step-inactive);transition:background .3s}
+.progress-step.active{background:var(--primary)}
+.progress-step.done{background:var(--green)}
+
+/* Steps */
+.step{display:none;background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:32px;animation:fadeIn .3s}
+.step.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.step h2{font-size:20px;color:var(--text-bright);margin-bottom:8px}
+.step p{color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px}
+
+/* Instructions */
+.instructions{background:var(--input-bg);border:1px solid var(--card-border);border-radius:8px;padding:16px;margin-bottom:20px}
+.instructions ol{padding-left:20px}
+.instructions li{margin-bottom:8px;font-size:14px;line-height:1.5;color:var(--text)}
+.instructions li code{background:#2a2d3a;padding:2px 6px;border-radius:4px;font-size:13px;color:var(--green)}
+.instructions a{color:var(--primary);text-decoration:none}
+.instructions a:hover{text-decoration:underline}
+
+/* Form */
+label{display:block;font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+input,select{width:100%;padding:12px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;color:var(--text-bright);font-size:15px;outline:none;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--primary)}
+input::placeholder{color:var(--text-muted)}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2372767d' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+select option{background:var(--card);color:var(--text)}
+
+.form-group{margin-bottom:16px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--primary-hover)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover:not(:disabled){background:var(--green-hover)}
+.btn-outline{background:transparent;border:1px solid var(--card-border);color:var(--text)}
+.btn-outline:hover{background:var(--input-bg)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-row{display:flex;gap:12px;margin-top:24px}
+.btn-row .btn{flex:1}
+
+/* Bot Info Card */
+.bot-info{display:none;background:var(--input-bg);border:1px solid var(--green);border-radius:8px;padding:16px;margin-top:16px;text-align:center}
+.bot-info.show{display:block;animation:fadeIn .3s}
+.bot-info .bot-name{font-size:18px;font-weight:700;color:var(--text-bright);margin-bottom:4px}
+.bot-info .bot-id{font-size:12px;color:var(--text-muted)}
+.bot-info .checkmark{color:var(--green);font-size:24px;margin-bottom:8px;display:block}
+
+/* Status */
+.status{padding:10px 14px;border-radius:8px;font-size:14px;margin-top:12px;display:none}
+.status.show{display:block;animation:fadeIn .3s}
+.status.error{background:rgba(237,66,69,.15);border:1px solid var(--danger);color:var(--danger)}
+.status.success{background:rgba(67,181,129,.15);border:1px solid var(--green);color:var(--green)}
+.status.loading{background:rgba(88,101,242,.15);border:1px solid var(--primary);color:var(--primary)}
+
+/* Spinner */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Done */
+.done-card{text-align:center;padding:40px 32px}
+.done-card .checkmark-big{font-size:64px;margin-bottom:16px;display:block}
+.done-card h2{color:var(--green);margin-bottom:8px}
+.done-card p{margin-bottom:24px}
+.done-card .summary{text-align:left;background:var(--input-bg);border-radius:8px;padding:16px;margin-bottom:24px}
+.done-card .summary div{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px solid var(--card-border)}
+.done-card .summary div:last-child{border:none}
+.done-card .summary .label{color:var(--text-muted)}
+.done-card .summary .value{color:var(--text-bright);font-weight:600}
+
+/* Refresh hint */
+.refresh-hint{display:none;text-align:center;margin-top:12px;font-size:13px;color:var(--text-muted)}
+.refresh-hint.show{display:block}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">
+    <span class="icon">&#9889;</span>
+    <h1>MCStatsBot Setup</h1>
+    <p>Richte deinen Discord-Bot in wenigen Schritten ein</p>
+  </div>
+
+  <div class="progress">
+    <div class="progress-step active" id="prog1"></div>
+    <div class="progress-step" id="prog2"></div>
+    <div class="progress-step" id="prog3"></div>
+    <div class="progress-step" id="prog4"></div>
+  </div>
+
+  <!-- Step 1: Token -->
+  <div class="step active" id="step1">
+    <h2>1. Discord Bot erstellen</h2>
+    <p>Erstelle eine Discord-Anwendung und kopiere den Bot-Token.</p>
+    <div class="instructions">
+      <ol>
+        <li>Oeffne das <a href="https://discord.com/developers/applications" target="_blank">Discord Developer Portal</a></li>
+        <li>Klicke <code>New Application</code> und gib einen Namen ein (z.B. "MCStatsBot")</li>
+        <li>Gehe links auf <code>Bot</code></li>
+        <li>Klicke <code>Reset Token</code> und kopiere den Token</li>
+      </ol>
+    </div>
+    <div class="form-group">
+      <label>Bot Token</label>
+      <input type="password" id="tokenInput" placeholder="Token hier einfuegen..." autocomplete="off">
+    </div>
+    <button class="btn btn-primary" id="validateBtn" onclick="validateToken()">Token pruefen</button>
+    <div class="status" id="tokenStatus"></div>
+    <div class="bot-info" id="botInfo">
+      <span class="checkmark">&#10003;</span>
+      <div class="bot-name" id="botName"></div>
+      <div class="bot-id" id="botId"></div>
+    </div>
+    <div class="btn-row" id="step1Next" style="display:none">
+      <button class="btn btn-green" onclick="goStep(2)">Weiter</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Invite -->
+  <div class="step" id="step2">
+    <h2>2. Bot zum Server einladen</h2>
+    <p>Klicke den Button um den Bot zu deinem Discord-Server hinzuzufuegen.</p>
+    <a class="btn btn-primary" id="inviteLink" href="#" target="_blank">Bot zum Server hinzufuegen</a>
+    <p style="margin-top:16px">Nachdem du den Bot hinzugefuegt hast, klicke auf "Weiter".</p>
+    <div class="refresh-hint show">Tipp: Du kannst den Bot zu mehreren Servern hinzufuegen.</div>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(1)">Zurueck</button>
+      <button class="btn btn-green" onclick="loadGuilds()">Weiter</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Server & Channel -->
+  <div class="step" id="step3">
+    <h2>3. Server & Channel waehlen</h2>
+    <p>Waehle den Server und Channel fuer die taeglichen Reports.</p>
+    <div class="form-group">
+      <label>Discord Server</label>
+      <select id="guildSelect" onchange="loadChannels()">
+        <option value="">Server wird geladen...</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Text Channel</label>
+      <select id="channelSelect" disabled>
+        <option value="">Zuerst Server waehlen</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Report-Zeit (taeglich)</label>
+      <input type="time" id="reportTime" value="22:00">
+    </div>
+    <div class="status" id="step3Status"></div>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(2)">Zurueck</button>
+      <button class="btn btn-green" id="saveBtn" onclick="saveConfig()">Speichern & Starten</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Done -->
+  <div class="step done-card" id="step4">
+    <span class="checkmark-big">&#10003;</span>
+    <h2>Setup abgeschlossen!</h2>
+    <p>Dein Discord-Bot ist jetzt aktiv und verbunden.</p>
+    <div class="summary">
+      <div><span class="label">Bot</span><span class="value" id="summaryBot">-</span></div>
+      <div><span class="label">Server</span><span class="value" id="summaryGuild">-</span></div>
+      <div><span class="label">Channel</span><span class="value" id="summaryChannel">-</span></div>
+      <div><span class="label">Report-Zeit</span><span class="value" id="summaryTime">-</span></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted)">Teste mit <code>/mcstats report</code> im Minecraft-Chat oder nutze die Discord Slash-Commands.</p>
+  </div>
+</div>
+
+<script>
+let validatedToken = '';
+let clientId = '';
+let botNameStr = '';
+let guildsData = [];
+
+function showStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'status show ' + type;
+  el.innerHTML = (type === 'loading' ? '<span class="spinner"></span> ' : '') + msg;
+}
+function hideStatus(id) {
+  document.getElementById(id).className = 'status';
+}
+
+function goStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  for (let i = 1; i <= 4; i++) {
+    const p = document.getElementById('prog' + i);
+    p.className = 'progress-step' + (i < n ? ' done' : i === n ? ' active' : '');
+  }
+}
+
+async function validateToken() {
+  const token = document.getElementById('tokenInput').value.trim();
+  if (!token) { showStatus('tokenStatus', 'error', 'Bitte Token eingeben'); return; }
+
+  document.getElementById('validateBtn').disabled = true;
+  showStatus('tokenStatus', 'loading', 'Token wird geprueft...');
+
+  try {
+    const res = await fetch('/setup/api/validate-token', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({token})
+    });
+    const data = await res.json();
+
+    if (data.valid) {
+      validatedToken = token;
+      clientId = data.clientId;
+      botNameStr = data.botName;
+      hideStatus('tokenStatus');
+      document.getElementById('botName').textContent = data.botName;
+      document.getElementById('botId').textContent = 'ID: ' + data.clientId;
+      document.getElementById('botInfo').classList.add('show');
+      document.getElementById('step1Next').style.display = 'flex';
+
+      // Set invite link
+      const perms = 2048; // Send Messages
+      document.getElementById('inviteLink').href =
+        'https://discord.com/oauth2/authorize?client_id=' + clientId + '&scope=bot+applications.commands&permissions=' + perms;
+    } else {
+      showStatus('tokenStatus', 'error', data.error || 'Ungueltiger Token');
+      document.getElementById('botInfo').classList.remove('show');
+      document.getElementById('step1Next').style.display = 'none';
+    }
+  } catch (e) {
+    showStatus('tokenStatus', 'error', 'Verbindungsfehler: ' + e.message);
+  }
+  document.getElementById('validateBtn').disabled = false;
+}
+
+async function loadGuilds() {
+  showStatus('step3Status', 'loading', 'Server werden geladen...');
+  goStep(3);
+
+  try {
+    const res = await fetch('/setup/api/guilds?token=' + encodeURIComponent(validatedToken));
+    const data = await res.json();
+    guildsData = data.guilds || [];
+
+    const sel = document.getElementById('guildSelect');
+    sel.innerHTML = '';
+    if (guildsData.length === 0) {
+      sel.innerHTML = '<option value="">Kein Server gefunden - Bot zuerst einladen!</option>';
+      showStatus('step3Status', 'error', 'Der Bot ist noch auf keinem Server. Gehe zurueck und lade ihn ein.');
+      return;
+    }
+    sel.innerHTML = '<option value="">Server waehlen...</option>';
+    guildsData.forEach(g => {
+      sel.innerHTML += '<option value="' + g.id + '">' + escapeHtml(g.name) + '</option>';
+    });
+    hideStatus('step3Status');
+  } catch (e) {
+    showStatus('step3Status', 'error', 'Fehler beim Laden: ' + e.message);
+  }
+}
+
+async function loadChannels() {
+  const guildId = document.getElementById('guildSelect').value;
+  const chSel = document.getElementById('channelSelect');
+  if (!guildId) { chSel.disabled = true; chSel.innerHTML = '<option value="">Zuerst Server waehlen</option>'; return; }
+
+  chSel.disabled = true;
+  chSel.innerHTML = '<option value="">Wird geladen...</option>';
+
+  try {
+    const res = await fetch('/setup/api/channels?token=' + encodeURIComponent(validatedToken) + '&guild=' + guildId);
+    const data = await res.json();
+    const channels = data.channels || [];
+
+    chSel.innerHTML = '<option value="">Channel waehlen...</option>';
+    channels.forEach(c => {
+      chSel.innerHTML += '<option value="' + c.id + '">#' + escapeHtml(c.name) + '</option>';
+    });
+    chSel.disabled = false;
+  } catch (e) {
+    chSel.innerHTML = '<option value="">Fehler beim Laden</option>';
+  }
+}
+
+async function saveConfig() {
+  const channelId = document.getElementById('channelSelect').value;
+  const reportTime = document.getElementById('reportTime').value;
+
+  if (!channelId) { showStatus('step3Status', 'error', 'Bitte Channel waehlen'); return; }
+  if (!reportTime) { showStatus('step3Status', 'error', 'Bitte Report-Zeit eingeben'); return; }
+
+  document.getElementById('saveBtn').disabled = true;
+  showStatus('step3Status', 'loading', 'Konfiguration wird gespeichert...');
+
+  try {
+    const res = await fetch('/setup/api/save', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        token: validatedToken,
+        channelId: channelId,
+        reportTime: reportTime
+      })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      const guildSel = document.getElementById('guildSelect');
+      const chSel = document.getElementById('channelSelect');
+      document.getElementById('summaryBot').textContent = botNameStr;
+      document.getElementById('summaryGuild').textContent = guildSel.options[guildSel.selectedIndex].text;
+      document.getElementById('summaryChannel').textContent = chSel.options[chSel.selectedIndex].text;
+      document.getElementById('summaryTime').textContent = reportTime + ' Uhr';
+      goStep(4);
+    } else {
+      showStatus('step3Status', 'error', data.error || 'Fehler beim Speichern');
+    }
+  } catch (e) {
+    showStatus('step3Status', 'error', 'Verbindungsfehler: ' + e.message);
+  }
+  document.getElementById('saveBtn').disabled = false;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Enter key on token input
+document.getElementById('tokenInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') validateToken();
+});
+</script>
+</body>
+</html>

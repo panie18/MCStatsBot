@@ -1,0 +1,17 @@
+# Node
+server/node_modules/
+server/.env
+server/*.db
+
+# Java / Gradle
+plugin/build/
+plugin/.gradle/
+plugin/out/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Dashboard node_modules
+plugin/dashboard/node_modules/
+server/frontend/node_modules/
