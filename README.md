@@ -4,7 +4,7 @@ MCStatsBot is a Minecraft server plugin that tracks what your players are up to 
 
 The central server that handles Discord integration is already hosted at [mcstatsbot.tech](https://mcstatsbot.tech) — you just install the plugin and follow a two-minute setup. No server, no Node.js, no config files to dig through.
 
-Also available on [SpigotMC](https://www.spigotmc.org/resources/mcstatsbot.123456/).
+Also available on [SpigotMC](https://www.spigotmc.org/resources/mcstatsbot.134361/).
 
 ---
 
