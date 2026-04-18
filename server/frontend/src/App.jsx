@@ -56,6 +56,9 @@ function Footer({ lang }) {
   return (
     <footer className="relative z-10 w-full max-w-[540px] py-4 fade-in">
       <div className="flex items-center justify-center gap-3 flex-wrap">
+        <a href="https://help.mcstatsbot.tech" className="text-[11px] font-medium px-3 py-1.5 rounded-full glass-btn flex items-center gap-1.5 transition-all hover:scale-[1.02]" style={{ color: 'var(--c-content-muted)' }}>
+          <ExternalLink className="w-3 h-3" /> Help
+        </a>
         <a href="/status" className="text-[11px] font-medium px-3 py-1.5 rounded-full glass-btn flex items-center gap-1.5 transition-all hover:scale-[1.02]" style={{ color: 'var(--c-content-muted)' }}>
           <Activity className="w-3 h-3" /> {t.status}
         </a>

@@ -184,6 +184,15 @@ app.get('/.well-known/security.txt', (req, res) => {
   ].join('\n'));
 });
 
+// help.mcstatsbot.tech — serve help page
+app.get('*', (req, res, next) => {
+  if (req.hostname === 'help.mcstatsbot.tech') {
+    res.setHeader('Cache-Control', 'no-store');
+    return res.sendFile(path.join(__dirname, '..', 'public', 'help', 'index.html'));
+  }
+  next();
+});
+
 // SPA catch-all
 app.get('*', (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
