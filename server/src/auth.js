@@ -123,7 +123,7 @@ router.get('/callback', async (req, res) => {
 // GET /auth/guilds
 router.get('/guilds', async (req, res) => {
   try {
-    const session = JSON.parse(req.signedCookies.__Host-mcstats || 'null');
+    const session = JSON.parse(req.signedCookies['__Host-mcstats'] || 'null');
     if (!session?.accessToken || !session?.userId) {
       securityEvent('AUTH_GUILDS_UNAUTHORIZED', req);
       return res.status(401).json({ error: 'Not authenticated' });
@@ -165,7 +165,7 @@ router.get('/guilds', async (req, res) => {
 // GET /auth/channels?guild_id=xxx
 router.get('/channels', async (req, res) => {
   try {
-    const session = JSON.parse(req.signedCookies.__Host-mcstats || 'null');
+    const session = JSON.parse(req.signedCookies['__Host-mcstats'] || 'null');
     if (!session?.userId) {
       securityEvent('AUTH_CHANNELS_UNAUTHORIZED', req);
       return res.status(401).json({ error: 'Not authenticated' });
@@ -200,7 +200,7 @@ router.get('/channels', async (req, res) => {
 // POST /auth/save
 router.post('/save', (req, res) => {
   try {
-    const session = JSON.parse(req.signedCookies.__Host-mcstats || 'null');
+    const session = JSON.parse(req.signedCookies['__Host-mcstats'] || 'null');
     if (!session?.userId || !session?.serverId) {
       securityEvent('AUTH_SAVE_UNAUTHORIZED', req);
       return res.status(401).json({ error: 'Not authenticated' });
