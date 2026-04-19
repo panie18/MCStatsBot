@@ -62,6 +62,9 @@ function Footer({ lang }) {
         <a href="/status" className="text-[11px] font-medium px-3 py-1.5 rounded-full glass-btn flex items-center gap-1.5 transition-all hover:scale-[1.02]" style={{ color: 'var(--c-content-muted)' }}>
           <Activity className="w-3 h-3" /> {t.status}
         </a>
+        <a href="mailto:support@paulify.eu" className="text-[11px] font-medium px-3 py-1.5 rounded-full glass-btn flex items-center gap-1.5 transition-all hover:scale-[1.02]" style={{ color: 'var(--c-content-muted)' }}>
+          <MessageSquare className="w-3 h-3" /> Support
+        </a>
         <a href="/terms" className="text-[11px] font-medium px-3 py-1.5 rounded-full glass-btn flex items-center gap-1.5 transition-all hover:scale-[1.02]" style={{ color: 'var(--c-content-muted)' }}>
           <FileText className="w-3 h-3" /> {t.terms}
         </a>
@@ -616,9 +619,14 @@ function SetupWizard({ lang, setLang }) {
                     <AlertCircle className="w-5 h-5 mx-auto mb-2" style={{ color: 'var(--c-warning)' }} />
                     <p className="text-sm mb-3" style={{ color: 'var(--c-content-muted)' }}>{t.botNotOnServer}</p>
                     {waitingForBot ? (
-                      <div className="flex items-center justify-center gap-2">
-                        <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--c-action)' }} />
-                        <span className="text-[13px]" style={{ color: 'var(--c-content-muted)' }}>{lang === 'de' ? 'Warte auf Bot…' : 'Waiting for bot to join…'}</span>
+                      <div className="text-center">
+                        <div className="flex items-center justify-center gap-2 mb-3">
+                          <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--c-action)' }} />
+                          <span className="text-[13px]" style={{ color: 'var(--c-content-muted)' }}>{lang === 'de' ? 'Bot hinzugefügt? Hier klicken:' : 'Added the bot? Come back here and click:'}</span>
+                        </div>
+                        <Btn variant="accent" size="sm" onClick={() => { setWaitingForBot(false); loadGuilds(0); }}>
+                          <Check className="w-3.5 h-3.5" /> {"I've added the bot"}
+                        </Btn>
                       </div>
                     ) : (
                       <div className="flex items-center justify-center gap-2">
@@ -647,9 +655,14 @@ function SetupWizard({ lang, setLang }) {
                     <AlertCircle className="w-5 h-5 mx-auto mb-2" style={{ color: 'var(--c-warning)' }} />
                     <p className="text-sm mb-3" style={{ color: 'var(--c-content-muted)' }}>{t.botNotOnServer}</p>
                     {waitingForBot ? (
-                      <div className="flex items-center justify-center gap-2">
-                        <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--c-action)' }} />
-                        <span className="text-[13px]" style={{ color: 'var(--c-content-muted)' }}>{lang === 'de' ? 'Warte auf Bot…' : 'Waiting for bot to join…'}</span>
+                      <div className="text-center">
+                        <div className="flex items-center justify-center gap-2 mb-3">
+                          <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--c-action)' }} />
+                          <span className="text-[13px]" style={{ color: 'var(--c-content-muted)' }}>{lang === 'de' ? 'Bot hinzugefügt? Hier klicken:' : 'Added the bot? Come back here and click:'}</span>
+                        </div>
+                        <Btn variant="accent" size="sm" onClick={() => { setWaitingForBot(false); loadGuilds(0); }}>
+                          <Check className="w-3.5 h-3.5" /> {lang === 'de' ? 'Bot wurde hinzugefügt' : 'I\'ve added the bot'}
+                        </Btn>
                       </div>
                     ) : (
                       <div className="flex items-center justify-center gap-2">
