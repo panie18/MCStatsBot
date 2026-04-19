@@ -82,7 +82,7 @@ const generalLimiter = rateLimit({
   }
 });
 
-// Strict limiter for auth (Discord OAuth flow)
+// Strict limiter for sensitive auth (OAuth flow, save)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 30,
@@ -90,6 +90,18 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
   handler: (req, res) => {
     securityEvent('RATE_LIMIT_AUTH', req);
+    res.status(429).json({ error: 'Too many requests' });
+  }
+});
+
+// Lenient limiter for read-only setup endpoints (guilds, channels, invite-url)
+const setupLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    securityEvent('RATE_LIMIT_SETUP', req);
     res.status(429).json({ error: 'Too many requests' });
   }
 });
@@ -161,6 +173,9 @@ app.use(express.static(path.join(__dirname, '..', 'public'), {
 }));
 
 // ── Routes ────────────────────────────────────────────────────────────────────
+app.use('/auth/guilds', setupLimiter);
+app.use('/auth/channels', setupLimiter);
+app.use('/auth/invite-url', setupLimiter);
 app.use('/auth', authLimiter, authRouter);
 app.use('/api', apiLimiter, apiRouter);
 

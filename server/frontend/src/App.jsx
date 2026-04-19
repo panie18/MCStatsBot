@@ -315,6 +315,7 @@ function SetupWizard({ lang, setLang }) {
   const [reportLang, setReportLang] = useState(lang)
   const [authFailed, setAuthFailed] = useState(false)
   const [channelsLoading, setChannelsLoading] = useState(false)
+  const [waitingForBot, setWaitingForBot] = useState(false)
   const t = translations[lang]?.setup || translations.de.setup
 
   useEffect(() => {
@@ -337,6 +338,21 @@ function SetupWizard({ lang, setLang }) {
       loadInviteUrl()
     }
   }, [isConfigure])
+
+  useEffect(() => {
+    if (!waitingForBot) return
+    const interval = setInterval(async () => {
+      const res = await fetch('/auth/guilds').catch(() => null)
+      if (!res || !res.ok) return
+      const data = await res.json()
+      const guilds = data.guilds || []
+      if (guilds.some(g => g.botPresent)) {
+        setWaitingForBot(false)
+        loadGuilds(0)
+      }
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [waitingForBot])
 
   async function loadInviteUrl(retries = 3) {
     try {
@@ -599,14 +615,21 @@ function SetupWizard({ lang, setLang }) {
                   <div className="glass-sm p-4 rounded-2xl text-center">
                     <AlertCircle className="w-5 h-5 mx-auto mb-2" style={{ color: 'var(--c-warning)' }} />
                     <p className="text-sm mb-3" style={{ color: 'var(--c-content-muted)' }}>{t.botNotOnServer}</p>
-                    <div className="flex items-center justify-center gap-2">
-                      {inviteUrl && (
-                        <a href={inviteUrl} target="_blank" rel="noopener noreferrer">
-                          <Btn variant="accent" size="sm"><ExternalLink className="w-3.5 h-3.5" /> {t.inviteBot}</Btn>
-                        </a>
-                      )}
-                      <Btn variant="ghost" size="sm" onClick={() => loadGuilds(0)}><RefreshCw className="w-3.5 h-3.5" /> {t.refresh}</Btn>
-                    </div>
+                    {waitingForBot ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--c-action)' }} />
+                        <span className="text-[13px]" style={{ color: 'var(--c-content-muted)' }}>{lang === 'de' ? 'Warte auf Bot…' : 'Waiting for bot to join…'}</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-2">
+                        {inviteUrl && (
+                          <a href={inviteUrl} target="_blank" rel="noopener noreferrer" onClick={() => setWaitingForBot(true)}>
+                            <Btn variant="accent" size="sm"><ExternalLink className="w-3.5 h-3.5" /> {t.inviteBot}</Btn>
+                          </a>
+                        )}
+                        <Btn variant="ghost" size="sm" onClick={() => loadGuilds(0)}><RefreshCw className="w-3.5 h-3.5" /> {t.refresh}</Btn>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -623,16 +646,23 @@ function SetupWizard({ lang, setLang }) {
                   <div className="glass-sm p-4 rounded-2xl text-center">
                     <AlertCircle className="w-5 h-5 mx-auto mb-2" style={{ color: 'var(--c-warning)' }} />
                     <p className="text-sm mb-3" style={{ color: 'var(--c-content-muted)' }}>{t.botNotOnServer}</p>
-                    <div className="flex items-center justify-center gap-2">
-                      {inviteUrl ? (
-                        <a href={inviteUrl} target="_blank" rel="noopener noreferrer">
-                          <Btn variant="accent" size="sm"><ExternalLink className="w-3.5 h-3.5" /> {t.inviteBot}</Btn>
-                        </a>
-                      ) : (
-                        <Btn variant="accent" size="sm" disabled><Loader2 className="w-3.5 h-3.5 animate-spin" /> {t.inviteBot}</Btn>
-                      )}
-                      <Btn variant="ghost" size="sm" onClick={() => loadGuilds(0)}><RefreshCw className="w-3.5 h-3.5" /> {t.refresh}</Btn>
-                    </div>
+                    {waitingForBot ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--c-action)' }} />
+                        <span className="text-[13px]" style={{ color: 'var(--c-content-muted)' }}>{lang === 'de' ? 'Warte auf Bot…' : 'Waiting for bot to join…'}</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-2">
+                        {inviteUrl ? (
+                          <a href={inviteUrl} target="_blank" rel="noopener noreferrer" onClick={() => setWaitingForBot(true)}>
+                            <Btn variant="accent" size="sm"><ExternalLink className="w-3.5 h-3.5" /> {t.inviteBot}</Btn>
+                          </a>
+                        ) : (
+                          <Btn variant="accent" size="sm" disabled><Loader2 className="w-3.5 h-3.5 animate-spin" /> {t.inviteBot}</Btn>
+                        )}
+                        <Btn variant="ghost" size="sm" onClick={() => loadGuilds(0)}><RefreshCw className="w-3.5 h-3.5" /> {t.refresh}</Btn>
+                      </div>
+                    )}
                   </div>
                 )}
 
